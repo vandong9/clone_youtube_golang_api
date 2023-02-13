@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package model;
+option go_package=".";
+
+message Video {
+    string id = 1;
+    string user_id = 2;
+    string channel_id = 3;
+    string title = 4;
+    string description = 5;
+    string streaming_url = 6;
+    string thumbnail_url = 7;
+}

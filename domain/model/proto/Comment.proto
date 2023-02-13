@@ -1,0 +1,13 @@
+
+syntax = "proto3";
+
+package model;
+option go_package=".";
+
+message Comment {
+	string id = 1;
+	string parent_id = 2;
+	string user_id = 3;
+	string video_id = 4;
+	string message = 5;
+}

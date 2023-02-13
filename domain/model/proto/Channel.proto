@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package model;
+option go_package=".";
+
+message Channel {
+    string id = 1;
+    string user_id = 2;
+    string name = 3;
+    string description = 4;
+}
