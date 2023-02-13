@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package model;
+
+message User {
+  string id = 1;
+  string full_name = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string email = 5;
+  string password = 6;
+  string profile_pic = 7;
+  bool is_verify = 8;
+  bool has_channel = 9;
+}
