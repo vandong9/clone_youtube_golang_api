@@ -8,7 +8,7 @@ import (
 
 )
 
-func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
+func InitAuthRoutes(route *gin.Engine) {
 
 	groupRoute := route.Group("/api/v1")
 	groupRoute.POST("/register", transport.CreateUser())
