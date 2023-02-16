@@ -11,6 +11,10 @@ type UserStorage struct {
 	DB *gorm.DB
 }
 
+func CreateUserStorage(db *gorm.DB) UserStorage {
+	return UserStorage{DB: db}
+}
+
 func (s *UserStorage) CreateUser(ctx context.Context, data *models.User) error {
 	if err := s.DB.Create(&data).Error; err != nil {
 		return err

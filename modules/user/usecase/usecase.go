@@ -4,6 +4,9 @@ import (
 	"context"
 
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
+	"com.vandong9.clone_youtube_golang_api/modules/user/storage"
+
+	"gorm.io/gorm"
 )
 
 type IUserStorage interface {
@@ -11,15 +14,15 @@ type IUserStorage interface {
 }
 
 type UserUsecase struct {
-	storage IUserStorage
+	storage storage.UserStorage
 }
 
-func CreateUserUsecase(storage IUserStorage) *UserUsecase {
-	uc := UserUsecase{storage: storage}
+func CreateUserUsecase(db *gorm.DB) *UserUsecase {
+	uc := UserUsecase{storage: storage.CreateUserStorage(db)}
 	return &uc
 }
 
-func (uc *UserUsecase) createUser(ctx context.Context, data *models.User) error {
+func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.User) error {
 	err := uc.storage.CreateUser(ctx, data)
 	return err
 }
