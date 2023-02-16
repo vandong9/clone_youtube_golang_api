@@ -19,3 +19,9 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 		}
 	}
 }
+
+func UpdateUser(db *gorm.DB) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+
+	}
+}

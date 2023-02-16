@@ -6,11 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateUserStorageInPostgres(config config.Config) (*UserStorage, error) {
+func CreateUserStorageInPostgres(config config.Config) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(config.Postgres_URL), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	sql := UserStorage{DB: db}
-	return &sql, nil
+	return db, nil
 }

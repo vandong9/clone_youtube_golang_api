@@ -10,7 +10,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
+
+	// "gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -30,8 +32,12 @@ func main() {
 }
 
 func SetupRouter() *gin.Engine {
-	dns := "host=localhost user=postgres password=123456 dbname=clone_youtube port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	// postgres
+	// dns := "host=localhost user=postgres password=123456 dbname=clone_youtube port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	// db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+
+	// sqlite
+	db, err := gorm.Open(sqlite.Open("clone_youtube_sqlite.db"), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)

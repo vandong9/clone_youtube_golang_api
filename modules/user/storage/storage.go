@@ -21,3 +21,10 @@ func (s *UserStorage) CreateUser(ctx context.Context, data *models.User) error {
 	}
 	return nil
 }
+
+func (s *UserStorage) UpdateUser(ctx context.Context, data *models.UpdateUserRequest) error {
+	if err := s.DB.Create(&data).Error; err != nil {
+		return err
+	}
+	return nil
+}
