@@ -12,6 +12,7 @@ import (
 type IUserStorage interface {
 	CreateUser(ctx context.Context, data *models.User) error
 	UpdateUser(ctx context.Context, data *models.UpdateUserRequest) error
+	GetUserByIDAndPassword(ctx context.Context, id string, password string) (user models.User, err error)
 }
 
 type UserUsecase struct {
@@ -21,6 +22,10 @@ type UserUsecase struct {
 func CreateUserUsecase(db *gorm.DB) *UserUsecase {
 	uc := UserUsecase{storage: storage.CreateUserStorage(db)}
 	return &uc
+}
+
+func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) {
+	user, err := uc.storage.GetUserByIDAndPassword(ctx, data.Name, data.Password)
 }
 
 func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.User) error {

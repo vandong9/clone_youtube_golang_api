@@ -2,6 +2,9 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -12,6 +15,14 @@ type User struct {
 	Active    bool   `gorm:"type:bool;default:false"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (m *User) BeforeSave(_ *gorm.DB) (err error) {
+	if m.ID == "" {
+		m.ID = uuid.New().String()
+		m.CreatedAt = time.Now()
+	}
+	return nil
 }
 
 type CreateUserRequest struct {

@@ -12,6 +12,8 @@ require (
 	gorm.io/gorm v1.24.5
 )
 
+require github.com/google/uuid v1.3.0 // indirect
+
 require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/cors v1.4.0

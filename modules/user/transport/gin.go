@@ -9,6 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
+func Login(db *gorm.DB) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+		var input models.LoginInput
+		ctx.ShouldBindJSON(&input)
+
+		uc := usecase.CreateUserUsecase(db)
+		uc.Login(ctx, &input)
+	}
+}
+
 func CreateUser(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		user := models.User{}
