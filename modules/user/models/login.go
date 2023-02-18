@@ -3,8 +3,9 @@ package models
 import "encoding/json"
 
 type LoginInput struct {
-	Name     string `json:"name" validate:"required"`
+	Name     string `json:"name" validate:"required,min=8,max=12"`
 	Password string `json:"password" validate:"required"`
+	Addition string `json:"addition"`
 }
 
 type LoginResponse struct {
