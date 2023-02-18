@@ -2,6 +2,7 @@ package transport
 
 import (
 	"fmt"
+	"net/http"
 
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
@@ -12,10 +13,18 @@ import (
 func Login(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		var input models.LoginInput
-		ctx.ShouldBindJSON(&input)
+		if err := ctx.ShouldBindJSON(&input); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
 		uc := usecase.CreateUserUsecase(db)
-		uc.Login(ctx, &input)
+		user, err := uc.Login(ctx, &input)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{"body": &user})
 	}
 }
 

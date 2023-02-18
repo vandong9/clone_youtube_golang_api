@@ -24,8 +24,15 @@ func CreateUserUsecase(db *gorm.DB) *UserUsecase {
 	return &uc
 }
 
-func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) {
-	user, err := uc.storage.GetUserByIDAndPassword(ctx, data.Name, data.Password)
+func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) (user models.User, err error) {
+	user, err = uc.storage.GetUserByIDAndPassword(ctx, data.Name, data.Password)
+	if err != nil {
+		err = &models.LoginError{
+			Code:    "Login_Error_1",
+			Title:   "title 1",
+			Content: "content 1"}
+	}
+	return
 }
 
 func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.User) error {

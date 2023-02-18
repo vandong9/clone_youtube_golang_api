@@ -20,8 +20,8 @@ func (s *UserStorage) GetUserByID(ctx context.Context, id string) (user models.U
 	return
 }
 
-func (s *UserStorage) GetUserByIDAndPassword(ctx context.Context, id string, password string) (user models.User, err error) {
-	err = s.DB.Where("ID = ? AND Password= ?", id, password).Find(&user).Error
+func (s *UserStorage) GetUserByIDAndPassword(ctx context.Context, username string, password string) (user models.User, err error) {
+	err = s.DB.Where("Username = ? AND Password= ?", username, password).First(&user).Error
 	return
 }
 
