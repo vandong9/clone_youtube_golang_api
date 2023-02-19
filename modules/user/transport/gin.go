@@ -6,6 +6,7 @@ import (
 
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
+	"com.vandong9.clone_youtube_golang_api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -15,7 +16,7 @@ func Login(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		var input models.LoginInput
 		if err := ctx.ShouldBindJSON(&input); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			utils.Reponse(ctx, http.StatusBadRequest, err, "")
 			return
 		}
 		var validate *validator.Validate
@@ -23,7 +24,7 @@ func Login(db *gorm.DB) func(*gin.Context) {
 		err := validate.Struct(input)
 
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "request params error: " + err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
