@@ -5,7 +5,9 @@ import (
 	"log"
 
 	"com.vandong9.clone_youtube_golang_api/config"
+	channelRoute "com.vandong9.clone_youtube_golang_api/modules/channel"
 	userRoute "com.vandong9.clone_youtube_golang_api/modules/user/route"
+
 	helmet "github.com/danielkov/gin-helmet"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -55,7 +57,7 @@ func SetupRouter() *gin.Engine {
 	router.Use(gzip.Gzip(gzip.BestCompression))
 
 	userRoute.InitAuthRoutes(db, router)
-
+	channelRoute.InitAuthRoutes(db, router)
 	return router
 
 }
