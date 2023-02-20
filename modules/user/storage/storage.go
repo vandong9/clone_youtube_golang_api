@@ -2,7 +2,9 @@ package storage
 
 import (
 	"context"
+	"time"
 
+	"com.vandong9.clone_youtube_golang_api/common/constant"
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"gorm.io/gorm"
 )
@@ -32,9 +34,26 @@ func (s *UserStorage) CreateUser(ctx context.Context, data *models.User) error {
 	return nil
 }
 
-func (s *UserStorage) UpdateUser(ctx context.Context, data *models.UpdateUserRequest) error {
-	if err := s.DB.Create(&data).Error; err != nil {
-		return err
+func (s *UserStorage) UpdateUser(ctx context.Context, data *models.UpdateInput) (*models.User, string) {
+	// get user by id
+	var user models.User
+	s.DB.Model(&user)
+
+	user.ID = data.ID
+	userID := s.DB.Debug().Select("*").Where("id = ?", data.ID).Find(&user)
+	if userID.RowsAffected < 1 {
+		return nil, constant.Storage_record_not_found
 	}
-	return nil
+
+	// update field that have value update
+	user.Fullname = data.Fullname
+	user.Email = data.Email
+	user.UpdatedAt = time.Now()
+	updateUser := s.DB.Save(&user)
+
+	if updateUser.Error != nil {
+		return nil, constant.Storage_update_record_fail
+	}
+
+	return &user, ""
 }

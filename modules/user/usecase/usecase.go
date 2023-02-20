@@ -11,7 +11,7 @@ import (
 
 type IUserStorage interface {
 	CreateUser(ctx context.Context, data *models.User) error
-	UpdateUser(ctx context.Context, data *models.UpdateUserRequest) error
+	UpdateUser(ctx context.Context, data *models.UpdateInput) (user *models.User, err_code string)
 	GetUserByIDAndPassword(ctx context.Context, id string, password string) (user models.User, err error)
 }
 
@@ -35,13 +35,20 @@ func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) (user
 	return
 }
 
-func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.User) error {
-	err := uc.storage.CreateUser(ctx, data)
+func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.RegisterInput) error {
+	var user models.User
+	user.Username = data.Username
+	user.Fullname = data.Fullname
+	user.Password = data.Password
+	user.Email = data.Email
+	err := uc.storage.CreateUser(ctx, user)
 	return err
 }
 
-func (uc *UserUsecase) UpdateUser(ctx context.Context, data *models.UpdateUserRequest) error {
-	err := uc.storage.UpdateUser(ctx, data)
-	return err
-
+func (uc *UserUsecase) UpdateUser(ctx context.Context, data *models.UpdateInput) (*models.User, *models.UpdateError) {
+	user, err_code := uc.storage.UpdateUser(ctx, data)
+	if len(err_code) > 0 {
+		return nil, &models.UpdateError{Code: err_code, Title: "", Content: ""}
+	}
+	return user, nil
 }
