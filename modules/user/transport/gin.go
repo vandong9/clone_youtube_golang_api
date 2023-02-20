@@ -39,14 +39,26 @@ func Login(db *gorm.DB) func(*gin.Context) {
 
 func CreateUser(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
-		user := models.RegisterInput{}
+		var input models.RegisterInput
+		if err := ctx.ShouldBindJSON(&input); err != nil {
+			utils.Response(ctx, http.StatusBadRequest, err, "")
+			return
+		}
+		var validate *validator.Validate
+		validate = validator.New()
+		err := validate.Struct(input)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		uc := usecase.CreateUserUsecase(db)
-		err := uc.CreateUser(ctx, &user)
+		err = uc.CreateUser(ctx, &input)
 		if err != nil {
 			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}
-		utils.Response(ctx, http.StatusOK, nil, user)
+		utils.Response(ctx, http.StatusOK, nil, input)
 	}
 }
 

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/storage"
@@ -41,7 +42,8 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.RegisterInpu
 	user.Fullname = data.Fullname
 	user.Password = data.Password
 	user.Email = data.Email
-	err := uc.storage.CreateUser(ctx, user)
+	fmt.Println(data)
+	err := uc.storage.CreateUser(ctx, &user)
 	return err
 }
 
