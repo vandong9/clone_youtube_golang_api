@@ -7,6 +7,7 @@ import (
 	"com.vandong9.clone_youtube_golang_api/config"
 	channelRoute "com.vandong9.clone_youtube_golang_api/modules/channel"
 	userRoute "com.vandong9.clone_youtube_golang_api/modules/user/route"
+	videoRoute "com.vandong9.clone_youtube_golang_api/modules/video"
 
 	helmet "github.com/danielkov/gin-helmet"
 	"github.com/gin-contrib/cors"
@@ -58,6 +59,7 @@ func SetupRouter() *gin.Engine {
 
 	userRoute.InitAuthRoutes(db, router)
 	channelRoute.InitAuthRoutes(db, router)
+	videoRoute.InitAuthRoutes(db, router)
 	return router
 
 }

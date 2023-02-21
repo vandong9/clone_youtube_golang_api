@@ -12,9 +12,13 @@ type Video struct {
 	UserId      string `gorm:"type:varchar(255);"`
 	ChannelID   string `gorm:"type:varchar(255);"`
 	Name        string `gorm:"type:varchar(255);"`
+	Image       string `gorm:"type:varchar(255);"`
 	Description string `gorm:"type:text;"`
+	SourceType  string `gorm:"type:varchar(100);"`
+	Source      string `gorm:"type:varchar(255);"`
 	Type        int
 	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (m *Video) BeforeSave(_ *gorm.DB) (err error) {
