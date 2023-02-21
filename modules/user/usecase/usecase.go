@@ -17,11 +17,12 @@ type IUserStorage interface {
 }
 
 type UserUsecase struct {
-	storage storage.UserStorage
+	storage IUserStorage
 }
 
 func CreateUserUsecase(db *gorm.DB) *UserUsecase {
-	uc := UserUsecase{storage: storage.CreateUserStorage(db)}
+	store := storage.CreateUserStorage(db)
+	uc := UserUsecase{storage: &store}
 	return &uc
 }
 

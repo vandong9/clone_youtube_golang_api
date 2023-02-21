@@ -1,17 +1,15 @@
 package create
 
-import "gorm.io/gorm"
-
 type ICreateChannelRepository interface {
-	CreateChannel(input CreateChannelInput)
+	CreateChannel(input CreateChannelInput) error
 }
 
 type CreateChannelService struct {
-	repo Repository
+	repo ICreateChannelRepository
 }
 
-func CreateChannelServiceInstance(db *gorm.DB) CreateChannelService {
-	return CreateChannelService{repo: CreateRepository(db)}
+func CreateChannelServiceInstance(repo ICreateChannelRepository) CreateChannelService {
+	return CreateChannelService{repo: repo}
 }
 
 func (s *CreateChannelService) CreateChannel(input CreateChannelInput) {

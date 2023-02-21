@@ -1,4 +1,4 @@
-package create
+package load_channel
 
 import (
 	"net/http"
@@ -9,9 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
+func QueryChannelHandler(db *gorm.DB) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		var input CreateChannelInput
+		var input QueryInput
+
 		err := ctx.ShouldBindJSON(&input)
 		if err != nil {
 			utils.Response(ctx, http.StatusBadRequest, err, nil)
@@ -25,8 +26,9 @@ func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
 			return
 		}
 
-		repo := CreateRepository(db)
-		service := CreateChannelServiceInstance(&repo)
-		service.CreateChannel(input)
+		repo := CreateQueryChannelRepo(db)
+		service := CreateQueryService(&repo)
+		service.QueryChannel()
+
 	}
 }
