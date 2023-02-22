@@ -26,7 +26,7 @@ func (repo *CreateVideoRepository) CreateVideo(input CreateVideoInput) (*models.
 	result := repo.db.Debug().Create(&video)
 
 	if result.Error != nil {
-		return nil, &comonModels.RepositoryError{Code: comonModels.RepositoryErrorKey_}
+		return nil, &comonModels.RepositoryError{Code: comonModels.RepositoryErrorCode_Fail}
 	}
 
 	return &video, nil
