@@ -6,6 +6,7 @@ import (
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
 	"com.vandong9.clone_youtube_golang_api/utils"
+	"com.vandong9.clone_youtube_golang_api/utils/jwt_handler"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -33,7 +34,14 @@ func Login(db *gorm.DB) func(*gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "login error:" + err.Error()})
 			return
 		}
-		ctx.JSON(http.StatusOK, gin.H{"body": &user})
+
+		token, err := jwt_handler.GenerateJWT(user.Username)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "gen token error:" + err.Error()})
+			return
+
+		}
+		ctx.JSON(http.StatusOK, gin.H{"body": &token})
 	}
 }
 
