@@ -1,11 +1,12 @@
 package jwt_handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
-	"github.com/golang-jwt/jwt"
+	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var sampleSecretKey = []byte("SecretYouShouldHide") // Should read from evn, secret
@@ -17,18 +18,37 @@ type Message struct {
 
 // var sampleSecretKey = Message{Status: "true", Info: "value"}
 
-func GenerateJWT(username string) (string, error) {
-	token := jwt.New(jwt.SigningMethodEdDSA)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["exp"] = time.Now().Add(10 * time.Minute)
-	claims["authorized"] = true
-	claims["user"] = username
-	tokenString, err := token.SignedString(sampleSecretKey)
+func GenerateJWT(token commonModels.LoginToken) (string, error) {
+	mapToken, _ := json.Marshal(&token)
+	var m jwt.MapClaims
+	_ = json.Unmarshal(mapToken, &m)
+
+	value := jwt.NewWithClaims(jwt.SigningMethodHS256, m)
+
+	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	// 	"foo": "bar",
+	// 	"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+	// })
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := value.SignedString(sampleSecretKey)
 	if err != nil {
 		return "Signing Error", err
 	}
 
 	return tokenString, nil
+
+	// token := jwt.New(jwt.SigningMethodEdDSA)
+	// claims := token.Claims.(jwt.MapClaims)
+	// claims["exp"] = time.Now().Add(10 * time.Minute)
+	// claims["authorized"] = true
+	// claims["user"] = username
+	// tokenString, err := token.SignedString(sampleSecretKey)
+	// if err != nil {
+	// 	return "Signing Error", err
+	// }
+
+	// return tokenString, nil
 }
 
 // comment these
@@ -77,25 +97,45 @@ func VerifyJWT(endpointHandler func(writer http.ResponseWriter, request *http.Re
 	})
 }
 
-func ExtractClaims(_ http.ResponseWriter, request *http.Request) (string, error) {
+func ExtractClaims(_ http.ResponseWriter, request *http.Request) (*commonModels.LoginToken, error) {
 	if request.Header["Token"] != nil {
 		tokenString := request.Header["Token"][0]
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-
-			if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
-				return nil, fmt.Errorf("there's an error with the signing method")
-			}
-			return sampleSecretKey, nil
-		})
-		if err != nil {
-			return "Error Parsing Token: ", err
-		}
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if ok && token.Valid {
-			username := claims["username"].(string)
-			return username, nil
-		}
+		return ParseToken(tokenString)
 	}
 
-	return "", nil // unable to extract claims
+	fmt.Println("There is no token in header")
+	return nil, nil // unable to extract claims
+}
+
+type MyCustomClaims struct {
+	Token commonModels.LoginToken `json:"token"`
+	jwt.RegisteredClaims
+}
+
+type ValidClaimError struct {
+}
+
+func (valid ValidClaimError) Error() string {
+	return "ValidClaimError"
+}
+
+func (my MyCustomClaims) Valid() error {
+	return ValidClaimError{}
+}
+
+func ParseToken(tokenString string) (*commonModels.LoginToken, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// since we only use the one private key to sign the tokens,
+		// we also only use its public counter part to verify
+		return sampleSecretKey, nil
+	})
+
+	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
+		token := claims.Token
+		fmt.Println(token.UserFullName + " -" + token.Time.GoString())
+		return &claims.Token, nil
+	} else {
+		fmt.Println("ParseToken error :" + err.Error())
+		return nil, err
+	}
 }

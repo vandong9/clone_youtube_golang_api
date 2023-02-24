@@ -8,8 +8,7 @@ type LoginInput struct {
 }
 
 type LoginResponse struct {
-	User  User
-	Token string
+	Token string `json:"token"`
 }
 
 type LoginError struct {

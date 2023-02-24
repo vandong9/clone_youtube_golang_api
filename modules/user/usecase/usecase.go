@@ -3,9 +3,12 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"time"
 
+	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/storage"
+	"com.vandong9.clone_youtube_golang_api/utils/jwt_handler"
 
 	"gorm.io/gorm"
 )
@@ -26,15 +29,29 @@ func CreateUserUsecase(db *gorm.DB) *UserUsecase {
 	return &uc
 }
 
-func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) (user models.User, err error) {
-	user, err = uc.storage.GetUserByIDAndPassword(ctx, data.Name, data.Password)
+func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) (*models.LoginResponse, error) {
+	user, err := uc.storage.GetUserByIDAndPassword(ctx, data.Name, data.Password)
 	if err != nil {
-		err = &models.LoginError{
+		return nil, &models.LoginError{
 			Code:    "Login_Error_1",
 			Title:   "title 1",
 			Content: "content 1"}
 	}
-	return
+
+	loginToken := commonModels.LoginToken{
+		UserFullName: user.Fullname,
+		Time:         time.Now(),
+		Duration:     15 * 60,
+	}
+	token, err := jwt_handler.GenerateJWT(loginToken)
+	if err != nil {
+		return nil, &models.LoginError{
+			Code:    "Login_Error_1",
+			Title:   "title 1",
+			Content: "content 1"}
+	}
+
+	return &models.LoginResponse{Token: token}, nil
 }
 
 func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.RegisterInput) error {

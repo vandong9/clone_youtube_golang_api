@@ -6,7 +6,6 @@ import (
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
 	"com.vandong9.clone_youtube_golang_api/utils"
-	"com.vandong9.clone_youtube_golang_api/utils/jwt_handler"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -19,29 +18,27 @@ func Login(db *gorm.DB) func(*gin.Context) {
 			utils.Response(ctx, http.StatusBadRequest, err, "")
 			return
 		}
-		var validate *validator.Validate
-		validate = validator.New()
+
+		validate := validator.New()
 		err := validate.Struct(input)
 
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}
 
 		uc := usecase.CreateUserUsecase(db)
-		user, err := uc.Login(ctx, &input)
+		token, err := uc.Login(ctx, &input)
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "login error:" + err.Error()})
+			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}
 
-		token, err := jwt_handler.GenerateJWT(user.Username)
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "gen token error:" + err.Error()})
+			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
-
 		}
-		ctx.JSON(http.StatusOK, gin.H{"body": &token})
+		utils.Response(ctx, http.StatusBadRequest, nil, token)
 	}
 }
 
