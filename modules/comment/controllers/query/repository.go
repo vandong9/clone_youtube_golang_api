@@ -16,7 +16,11 @@ func CreateQueryCommentRepository(db *gorm.DB) QueryCommentRepository {
 
 func (repo *QueryCommentRepository) QueryComment(input QueryCommentInput) ([]models.Comment, commonModels.RepositoryErrorCode) {
 	var comments []models.Comment
-	err := repo.db.Debug().Where("").Find(&comments)
+	input.PageIndex -= 1
+	if input.PageIndex < 0 {
+		input.PageIndex = 0
+	}
+	err := repo.db.Offset(input.PageIndex * input.PageSize).Limit(input.PageSize).Debug().Where("").Find(&comments)
 	if err != nil {
 		return []models.Comment{}, commonModels.RepositoryErrorCode_Fail
 	}

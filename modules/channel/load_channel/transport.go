@@ -28,7 +28,8 @@ func QueryChannelHandler(db *gorm.DB) func(ctx *gin.Context) {
 
 		repo := CreateQueryChannelRepo(db)
 		service := CreateQueryService(&repo)
-		service.QueryChannel()
+		response := service.QueryChannel(input)
+		utils.ReponseSuccess(ctx, response)
 
 	}
 }

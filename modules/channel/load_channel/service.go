@@ -5,7 +5,7 @@ import (
 )
 
 type IQueryChannelRepository interface {
-	QueryChannel() []models.Channel
+	QueryChannel(input QueryInput) []models.Channel
 }
 
 type QueryChannelService struct {
@@ -16,6 +16,7 @@ func CreateQueryService(repo IQueryChannelRepository) QueryChannelService {
 	return QueryChannelService{repo: repo}
 }
 
-func (s *QueryChannelService) QueryChannel() {
-
+func (s *QueryChannelService) QueryChannel(input QueryInput) QueryResponse {
+	channels := s.repo.QueryChannel(input)
+	return QueryResponse{Channels: channels}
 }
