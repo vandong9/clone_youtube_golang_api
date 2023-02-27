@@ -38,7 +38,7 @@ func Login(db *gorm.DB) func(*gin.Context) {
 			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}
-		utils.Response(ctx, http.StatusBadRequest, nil, token)
+		utils.Response(ctx, http.StatusOK, nil, token)
 	}
 }
 

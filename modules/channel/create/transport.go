@@ -15,7 +15,7 @@ func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		token, err := jwt_handler.ExtractClaims(ctx.Writer, ctx.Request)
 		fmt.Println("receive toke:  " + token.UserFullName)
-		if err != nil || token != nil {
+		if err != nil || token == nil {
 			utils.Response(ctx, http.StatusForbidden, err, nil)
 			return
 		}

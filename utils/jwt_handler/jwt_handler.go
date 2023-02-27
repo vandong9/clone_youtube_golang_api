@@ -1,9 +1,9 @@
 package jwt_handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
 	"github.com/golang-jwt/jwt/v5"
@@ -16,39 +16,65 @@ type Message struct {
 	Info   string `json:"info"`
 }
 
+type MyCustomClaims struct {
+	Token commonModels.LoginToken `json:"token"`
+	jwt.RegisteredClaims
+}
+
+type ValidClaimError struct {
+}
+
+func (valid ValidClaimError) Error() string {
+	return "ValidClaimError"
+}
+
+func (my MyCustomClaims) Valid() error {
+	return ValidClaimError{}
+}
+
 // var sampleSecretKey = Message{Status: "true", Info: "value"}
 
-func GenerateJWT(token commonModels.LoginToken) (string, error) {
-	mapToken, _ := json.Marshal(&token)
-	var m jwt.MapClaims
-	_ = json.Unmarshal(mapToken, &m)
+func GenerateJWT(loginInfo commonModels.LoginToken) (string, error) {
+	// mapToken, _ := json.Marshal(&token)
+	// var m jwt.MapClaims
+	// _ = json.Unmarshal(mapToken, &m)
 
-	value := jwt.NewWithClaims(jwt.SigningMethodHS256, m)
+	// value := jwt.NewWithClaims(jwt.SigningMethodHS256, m)
 
-	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-	// 	"foo": "bar",
-	// 	"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-	// })
+	// // token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	// // 	"foo": "bar",
+	// // 	"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+	// // })
 
-	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := value.SignedString(sampleSecretKey)
-	if err != nil {
-		return "Signing Error", err
-	}
-
-	return tokenString, nil
-
-	// token := jwt.New(jwt.SigningMethodEdDSA)
-	// claims := token.Claims.(jwt.MapClaims)
-	// claims["exp"] = time.Now().Add(10 * time.Minute)
-	// claims["authorized"] = true
-	// claims["user"] = username
-	// tokenString, err := token.SignedString(sampleSecretKey)
+	// // Sign and get the complete encoded token as a string using the secret
+	// tokenString, err := value.SignedString(sampleSecretKey)
 	// if err != nil {
 	// 	return "Signing Error", err
 	// }
 
 	// return tokenString, nil
+
+	claims := MyCustomClaims{
+		loginInfo,
+		jwt.RegisteredClaims{
+			// A usual scenario is to set the expiration time relative to the current time
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Issuer:    "test",
+			Subject:   "somebody",
+			ID:        "1",
+			Audience:  []string{"somebody_else"},
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	ss, err := token.SignedString(sampleSecretKey)
+	if err != nil {
+		return "Signing Error", err
+	}
+	return ss, nil
+
 }
 
 // comment these
@@ -107,35 +133,16 @@ func ExtractClaims(_ http.ResponseWriter, request *http.Request) (*commonModels.
 	return nil, nil // unable to extract claims
 }
 
-type MyCustomClaims struct {
-	Token commonModels.LoginToken `json:"token"`
-	jwt.RegisteredClaims
-}
-
-type ValidClaimError struct {
-}
-
-func (valid ValidClaimError) Error() string {
-	return "ValidClaimError"
-}
-
-func (my MyCustomClaims) Valid() error {
-	return ValidClaimError{}
-}
-
 func ParseToken(tokenString string) (*commonModels.LoginToken, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// since we only use the one private key to sign the tokens,
-		// we also only use its public counter part to verify
 		return sampleSecretKey, nil
 	})
 
 	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
-		token := claims.Token
-		fmt.Println(token.UserFullName + " -" + token.Time.GoString())
+		fmt.Printf("%v %v", claims.Token, claims.RegisteredClaims.Issuer)
 		return &claims.Token, nil
 	} else {
-		fmt.Println("ParseToken error :" + err.Error())
+		fmt.Println(err)
 		return nil, err
 	}
 }
