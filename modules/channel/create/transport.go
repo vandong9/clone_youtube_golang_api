@@ -1,7 +1,6 @@
 package create
 
 import (
-	"fmt"
 	"net/http"
 
 	"com.vandong9.clone_youtube_golang_api/utils"
@@ -14,7 +13,6 @@ import (
 func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		token, err := jwt_handler.ExtractClaims(ctx.Writer, ctx.Request)
-		fmt.Println("receive toke:  " + token.UserFullName)
 		if err != nil || token == nil {
 			utils.Response(ctx, http.StatusForbidden, err, nil)
 			return
@@ -36,6 +34,17 @@ func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
 
 		repo := CreateRepository(db)
 		service := CreateChannelServiceInstance(&repo)
-		service.CreateChannel(input)
+
+		tokenString := ctx.Request.Header["Token"][0]
+		if len(tokenString) > 0 {
+			userToken, err := service.repo.GetUserIDByGivenToken(tokenString)
+			if err != nil {
+				utils.ResponseForbidden(ctx, err)
+				return
+			}
+
+			input.UserId = userToken.UserID
+			service.CreateChannel(input)
+		}
 	}
 }

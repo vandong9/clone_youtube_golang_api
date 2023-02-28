@@ -16,7 +16,8 @@ func CreateQueryRepository(db *gorm.DB) QueryRepository {
 
 func (repo *QueryRepository) QueryVideo(input QueryInput) ([]models.Video, *comonModels.RepositoryError) {
 	var videos []models.Video
-	err := repo.db.Model(&models.Video{}).Find(&videos).Error
+	pageIndex := input.PageIndex - 1
+	err := repo.db.Offset(int(pageIndex * input.PageSize)).Limit(int(input.PageSize)).Model(&models.Video{}).Find(&videos).Error
 
 	if err != nil {
 		return videos, &comonModels.RepositoryError{Code: comonModels.RepositoryErrorCode_Fail}

@@ -22,3 +22,14 @@ func (repo *Repository) CreateChannel(input CreateChannelInput) error {
 	err := repo.db.Create(&channel).Error
 	return err
 }
+
+func (repo *Repository) GetUserIDByGivenToken(token string) (*models.UserToken, error) {
+	var userToken models.UserToken
+	err := repo.db.Where("Token = ?", token).Find(&userToken).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &userToken, nil
+
+}

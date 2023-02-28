@@ -1,8 +1,6 @@
 package query
 
 import (
-	"net/http"
-
 	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
 	"com.vandong9.clone_youtube_golang_api/utils"
 	"github.com/gin-gonic/gin"
@@ -14,13 +12,13 @@ func HandleQueryVideo(db *gorm.DB) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		var input QueryInput
 		if err := ctx.ShouldBindJSON(&input); err != nil {
-			utils.Response(ctx, http.StatusBadRequest, err, nil)
+			utils.ReponseBadRequest(ctx, err)
 			return
 		}
 
 		var validate = validator.New()
 		if err := validate.Struct(&input); err != nil {
-			utils.Response(ctx, http.StatusBadRequest, err, nil)
+			utils.ReponseBadRequest(ctx, err)
 			return
 		}
 
@@ -28,10 +26,10 @@ func HandleQueryVideo(db *gorm.DB) func(ctx *gin.Context) {
 		service := CreateQueryVideoService(&repo)
 		videos, err := service.QueryVideo(input)
 		if err != commonModels.ServiceErrorCode_OK {
-			utils.Response(ctx, http.StatusBadRequest, err, nil)
+			utils.ReponseBadRequest(ctx, err)
 			return
 		}
-		utils.Response(ctx, http.StatusOK, nil, videos)
+		utils.ReponseSuccess(ctx, videos)
 
 	}
 }

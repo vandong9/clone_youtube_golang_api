@@ -26,3 +26,9 @@ func (m *Channel) BeforeSave(_ *gorm.DB) (err error) {
 	}
 	return nil
 }
+
+type UserToken struct {
+	UserID     string `gorm:"type:varchar(255);"`
+	Token      string `gorm:"type:text;"`
+	CreateDate time.Time
+}

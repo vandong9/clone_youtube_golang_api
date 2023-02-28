@@ -6,8 +6,8 @@ import (
 
 type QueryInput struct {
 	UserID    string `json:"user_id"`
-	PageIndex int    `json:"page_index"`
-	PageSize  int    `json:"page_size"`
+	PageIndex uint   `json:"page_index"`
+	PageSize  uint   `json:"page_size"`
 }
 
 type QueryResponse struct {
