@@ -33,6 +33,7 @@ func MiddlewareCheckValidToken(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 		fmt.Println("Stored user id into header " + *userID)
-		ctx.Header(constant.Header_User_ID_Key, *userID)
+		ctx.Set(constant.Header_User_ID_Key, *userID)
+		ctx.Next()
 	}
 }

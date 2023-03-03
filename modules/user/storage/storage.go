@@ -19,7 +19,7 @@ func CreateUserStorage(db *gorm.DB) UserStorage {
 
 func (s *UserStorage) GetUserIDByGivenToken(ctx context.Context, token string) *string {
 	var userToken models.UserToken
-	err := s.DB.Debug().Where("Token == ?", token).First(&userToken).Error
+	err := s.DB.Debug().Where("token == ?", token).First(&userToken).Error
 	if err != nil {
 		return nil
 	}

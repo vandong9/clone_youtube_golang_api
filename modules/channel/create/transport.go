@@ -1,7 +1,6 @@
 package create
 
 import (
-	"fmt"
 	"net/http"
 
 	"com.vandong9.clone_youtube_golang_api/common/constant"
@@ -32,8 +31,7 @@ func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
 		repo := CreateRepository(db)
 		service := CreateChannelServiceInstance(&repo)
 
-		userID := ctx.GetHeader(constant.Header_User_ID_Key)
-		fmt.Println("get header user id " + userID)
+		userID := ctx.GetString(constant.Header_User_ID_Key)
 		if len(userID) == 0 {
 			utils.ResponseForbidden(ctx, nil)
 			return
