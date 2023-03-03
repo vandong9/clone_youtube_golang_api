@@ -1,8 +1,19 @@
 package models
 
-import "time"
+import (
+	"time"
 
-type Token struct {
-	token string
-	date  time.Timer
+	"gorm.io/gorm"
+)
+
+type UserToken struct {
+	UserID    string `gorm:"type:varchar(100);unique;not null"`
+	Token     string `gorm:"type:varchar(255);not null"`
+	CreatedAt time.Time
+}
+
+func (m *UserToken) BeforeSave(_ *gorm.DB) (err error) {
+	m.CreatedAt = time.Now()
+
+	return nil
 }

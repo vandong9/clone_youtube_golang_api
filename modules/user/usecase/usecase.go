@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
@@ -17,6 +16,8 @@ type IUserStorage interface {
 	CreateUser(ctx context.Context, data *models.User) error
 	UpdateUser(ctx context.Context, data *models.UpdateInput) (user *models.User, err_code string)
 	GetUserByIDAndPassword(ctx context.Context, id string, password string) (user models.User, err error)
+	GetUserIDByGivenToken(ctx context.Context, token string) *string
+	UpdateUserToken(ctx context.Context, userID string, token string) error
 }
 
 type UserUsecase struct {
@@ -51,6 +52,8 @@ func (uc *UserUsecase) Login(ctx context.Context, data *models.LoginInput) (*mod
 			Content: "content 1"}
 	}
 
+	uc.storage.UpdateUserToken(ctx, user.ID, token)
+
 	return &models.LoginResponse{Token: token}, nil
 }
 
@@ -60,7 +63,6 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, data *models.RegisterInpu
 	user.Fullname = data.Fullname
 	user.Password = data.Password
 	user.Email = data.Email
-	fmt.Println(data)
 	err := uc.storage.CreateUser(ctx, &user)
 	return err
 }
@@ -71,4 +73,8 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, data *models.UpdateInput)
 		return nil, &models.UpdateError{Code: err_code, Title: "", Content: ""}
 	}
 	return user, nil
+}
+
+func (uc *UserUsecase) GetUserIDByGivenToken(ctx context.Context, token string) *string {
+	return uc.storage.GetUserIDByGivenToken(ctx, token)
 }

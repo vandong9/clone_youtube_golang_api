@@ -12,6 +12,7 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 
 	// Migrate
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.UserToken{})
 
 	// handle path
 	groupRoute := route.Group("/api/v1")

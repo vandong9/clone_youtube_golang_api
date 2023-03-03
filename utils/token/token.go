@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 )
 
 // Function for generating the tokens.
@@ -69,4 +70,27 @@ func ValidateToken(token string, secret string) (bool, error) {
 	}
 	// This means the token matches
 	return true, nil
+}
+
+func GetSignedToken() (string, error) {
+	// we make a JWT Token here with signing method of ES256 and claims.
+	// claims are attributes.
+	// aud - audience
+	// iss - issuer
+	// exp - expiration of the Token
+	claimsMap := map[string]string{
+		"aud": "frontend.knowsearch.ml",
+		"iss": "knowsearch.ml",
+		"exp": fmt.Sprint(time.Now().Add(time.Minute * 1).Unix()),
+	}
+	// here we provide the shared secret. It should be very complex.
+	// Also, it should be passed as a System Environment variable
+
+	secret := "Secure_Random_String"
+	header := "HS256"
+	tokenString, err := GenerateToken(header, claimsMap, secret)
+	if err != nil {
+		return tokenString, err
+	}
+	return tokenString, nil
 }
