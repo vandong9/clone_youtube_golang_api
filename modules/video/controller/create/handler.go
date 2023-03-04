@@ -27,7 +27,12 @@ func HandleCreateVideo(db *gorm.DB) func(ctx *gin.Context) {
 
 		repo := CreateAddVideoRepository(db)
 		service := InitCreateVideoService(&repo)
-		service.CreateVideo(input)
+		video, er := service.CreateVideo(input)
+		if er != nil {
+			utils.ReponseBadRequest(ctx, er)
+			return
+		}
 
+		utils.ReponseSuccess(ctx, video)
 	}
 }

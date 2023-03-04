@@ -35,6 +35,13 @@ func MaxOfInt16(x, y int16) int16 {
 	return y
 }
 
+func MaxOfInt(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
+
 func MaxOfUInt(x, y uint) uint {
 	if x > y {
 		return x

@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/go-kit/kit v0.12.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.0.0-rc.1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

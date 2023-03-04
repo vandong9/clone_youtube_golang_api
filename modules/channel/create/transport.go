@@ -38,24 +38,13 @@ func CreateChannelHandler(db *gorm.DB) func(*gin.Context) {
 		}
 
 		input.UserId = userID
-		err = service.CreateChannel(input)
+		channel, err := service.CreateChannel(input)
 		if err != nil {
 			utils.ReponseBadRequest(ctx, err)
 			return
 		}
 
-		utils.ReponseSuccess(ctx, nil)
+		utils.ReponseSuccess(ctx, channel)
 
-		// tokenString := ctx.Request.Header["Token"][0]
-		// if len(tokenString) > 0 {
-		// 	userToken, err := service.repo.GetUserIDByGivenToken(tokenString)
-		// 	if err != nil {
-		// 		utils.ResponseForbidden(ctx, err)
-		// 		return
-		// 	}
-
-		// 	input.UserId = userToken.UserID
-		// 	service.CreateChannel(input)
-		// }
 	}
 }

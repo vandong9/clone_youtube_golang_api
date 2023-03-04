@@ -1,7 +1,9 @@
 package create
 
+import "com.vandong9.clone_youtube_golang_api/modules/channel/models"
+
 type ICreateChannelRepository interface {
-	CreateChannel(input CreateChannelInput) error
+	CreateChannel(input CreateChannelInput) (models.Channel, error)
 }
 
 type CreateChannelService struct {
@@ -12,6 +14,6 @@ func CreateChannelServiceInstance(repo ICreateChannelRepository) CreateChannelSe
 	return CreateChannelService{repo: repo}
 }
 
-func (s *CreateChannelService) CreateChannel(input CreateChannelInput) error {
+func (s *CreateChannelService) CreateChannel(input CreateChannelInput) (models.Channel, error) {
 	return s.repo.CreateChannel(input)
 }

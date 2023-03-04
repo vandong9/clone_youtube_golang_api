@@ -19,7 +19,7 @@ func CreateQueryChannelRepo(db *gorm.DB) QueryChannelRepository {
 func (repo *QueryChannelRepository) QueryChannel(input QueryInput) []models.Channel {
 	var channels []models.Channel
 	input.PageIndex -= 1
-	pageIndex := uint(math_util.MaxOfUInt(input.PageIndex, 0))
-	repo.db.Offset(int(pageIndex * input.PageSize)).Limit(int(math_util.MaxOfUInt(constant.Max_Channel_Page_Size, input.PageSize))).Model(&models.Channel{}).Find(&channels)
+	pageIndex := int(math_util.MaxOfInt(input.PageIndex, 0))
+	repo.db.Offset(int(pageIndex * input.PageSize)).Limit(int(math_util.MinOfInt(constant.Max_Channel_Page_Size, input.PageSize))).Model(&models.Channel{}).Find(&channels)
 	return channels
 }
