@@ -5,6 +5,7 @@ import (
 	"com.vandong9.clone_youtube_golang_api/modules/video/models"
 	"com.vandong9.clone_youtube_golang_api/utils/log"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +17,16 @@ func CreateAddVideoRepository(db *gorm.DB) CreateVideoRepository {
 	return CreateVideoRepository{db: db}
 }
 
+func (repo *CreateVideoRepository) GetDB() *gorm.DB {
+	return repo.db
+}
+
 func (repo *CreateVideoRepository) CreateVideo(ctx *gin.Context, input CreateVideoInput) (*models.Video, *commonModels.RepositoryError) {
+	validate := validator.New()
+	if err := validate.Struct(input); err != nil {
+		return nil, &commonModels.RepositoryError{Code: commonModels.RepositoryErrorCode_Fail}
+	}
+
 	var video models.Video
 	video.UserId = input.UserId
 	video.ChannelID = input.ChannelID

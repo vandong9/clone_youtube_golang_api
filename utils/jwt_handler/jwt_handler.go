@@ -138,6 +138,10 @@ func ParseToken(tokenString string) (*commonModels.LoginToken, error) {
 		return sampleSecretKey, nil
 	})
 
+	if token == nil || err != nil {
+		return nil, err
+	}
+
 	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
 		fmt.Printf("%v %v", claims.Token, claims.RegisteredClaims.Issuer)
 		return &claims.Token, nil

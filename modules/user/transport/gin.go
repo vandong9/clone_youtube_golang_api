@@ -6,6 +6,7 @@ import (
 	"com.vandong9.clone_youtube_golang_api/modules/user/models"
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
 	"com.vandong9.clone_youtube_golang_api/utils"
+	"com.vandong9.clone_youtube_golang_api/utils/log"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ func Login(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		var input models.LoginInput
 		if err := ctx.ShouldBindJSON(&input); err != nil {
+			log.LogInfo(ctx, "transport - parse input error:"+err.Error())
 			utils.Response(ctx, http.StatusBadRequest, err, "")
 			return
 		}
@@ -23,6 +25,7 @@ func Login(db *gorm.DB) func(*gin.Context) {
 		err := validate.Struct(input)
 
 		if err != nil {
+			log.LogInfo(ctx, "Transport - valid input error: "+err.Error())
 			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}
@@ -30,6 +33,7 @@ func Login(db *gorm.DB) func(*gin.Context) {
 		uc := usecase.CreateUserUsecase(db)
 		token, err := uc.Login(ctx, &input)
 		if err != nil {
+			log.LogInfo(ctx, "Transport - call business error: "+err.Error())
 			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}
@@ -47,6 +51,7 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		var input models.RegisterInput
 		if err := ctx.ShouldBindJSON(&input); err != nil {
+			log.LogInfo(ctx, "transport - parse input error:"+err.Error())
 			utils.Response(ctx, http.StatusBadRequest, err, "")
 			return
 		}
@@ -54,6 +59,7 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 		validate = validator.New()
 		err := validate.Struct(input)
 		if err != nil {
+			log.LogInfo(ctx, "Transport - valid input error: "+err.Error())
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -61,6 +67,7 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 		uc := usecase.CreateUserUsecase(db)
 		err = uc.CreateUser(ctx, &input)
 		if err != nil {
+			log.LogInfo(ctx, "Transport - call business error: "+err.Error())
 			utils.Response(ctx, http.StatusBadRequest, err, nil)
 			return
 		}

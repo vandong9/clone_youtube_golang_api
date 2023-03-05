@@ -18,3 +18,11 @@ func (code ServiceErrorCode) String() string {
 	}
 	return "unknown"
 }
+
+func (se ServiceError) Error() string {
+	switch se.Code {
+	case ServiceErrorCode_Fail:
+		return "ServiceErrorCode"
+	}
+	return "unknown"
+}

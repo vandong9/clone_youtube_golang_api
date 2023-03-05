@@ -8,6 +8,7 @@ import (
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
 	"com.vandong9.clone_youtube_golang_api/utils"
 	"com.vandong9.clone_youtube_golang_api/utils/jwt_handler"
+	"com.vandong9.clone_youtube_golang_api/utils/log"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -18,6 +19,11 @@ func MiddlewareCheckValidToken(db *gorm.DB) gin.HandlerFunc {
 		// verify token
 		token, err := jwt_handler.ExtractClaims(ctx.Writer, ctx.Request)
 		if err != nil || token == nil {
+			errMsg := "Header missing Token key"
+			if err != nil {
+				errMsg = err.Error()
+			}
+			log.LogInfo(ctx, "Middle-CheckToken validate error: "+errMsg)
 			utils.Response(ctx, http.StatusForbidden, err, nil)
 			ctx.Abort()
 			return
@@ -28,6 +34,7 @@ func MiddlewareCheckValidToken(db *gorm.DB) gin.HandlerFunc {
 		userService := usecase.CreateUserUsecase(db)
 		userID := userService.GetUserIDByGivenToken(ctx, tokenString)
 		if userID == nil {
+			log.LogInfo(ctx, "Middle-CheckToken query userid error : "+err.Error())
 			utils.Response(ctx, http.StatusForbidden, err, nil)
 			ctx.Abort()
 			return

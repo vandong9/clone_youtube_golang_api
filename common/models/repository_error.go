@@ -13,7 +13,7 @@ const (
 	RepositoryErrorCode_Fail
 )
 
-func (code RepositoryErrorCode) String() string {
+func (code RepositoryErrorCode) Error() string {
 	switch code {
 	case RepositoryErrorCode_Fail:
 		return "CreateFail"
