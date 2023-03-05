@@ -7,4 +7,5 @@ const (
 	Max_Channel_Page_Size      int    = 200
 	Header_User_ID_Key         string = "user_id"
 	Request_Header_Token_Key   string = "Token"
+	Context_ID                 string = "Context_ID"
 )
