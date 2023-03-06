@@ -6,6 +6,7 @@ import (
 
 	"com.vandong9.clone_youtube_golang_api/config"
 	channelRoute "com.vandong9.clone_youtube_golang_api/modules/channel"
+	commentRoute "com.vandong9.clone_youtube_golang_api/modules/comment"
 	userRoute "com.vandong9.clone_youtube_golang_api/modules/user/route"
 	videoRoute "com.vandong9.clone_youtube_golang_api/modules/video"
 
@@ -60,6 +61,7 @@ func SetupRouter() *gin.Engine {
 	userRoute.InitAuthRoutes(db, router)
 	channelRoute.InitAuthRoutes(db, router)
 	videoRoute.InitAuthRoutes(db, router)
+	commentRoute.InitCommentRoutes(db, router)
 	return router
 
 }

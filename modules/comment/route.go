@@ -11,10 +11,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
+func InitCommentRoutes(db *gorm.DB, route *gin.Engine) {
 	db.AutoMigrate(&models.Comment{})
 
-	group := route.Group("api/v1/commment", func(ctx *gin.Context) {
+	group := route.Group("api/v1/comment", func(ctx *gin.Context) {
 		ctx.Set(constant.Context_ID, "Comment-context-"+uuid.New().String())
 	})
 	group.POST("/create", middleware.MiddlewareCheckValidToken(db), create.HandleCreateComment(db))
