@@ -3,7 +3,7 @@ package create
 import (
 	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
 	"com.vandong9.clone_youtube_golang_api/modules/video/models"
-	"com.vandong9.clone_youtube_golang_api/utils/log"
+	"com.vandong9.clone_youtube_golang_api/utils/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -38,9 +38,9 @@ func (repo *CreateVideoRepository) CreateVideo(ctx *gin.Context, input CreateVid
 	result := repo.db.Debug().Create(&video)
 
 	if result.Error != nil {
-		log.LogInfo(ctx, "Repository - error: "+result.Error.Error())
+		logger.LogInfo(ctx, "Repository - error: "+result.Error.Error())
 		return nil, &commonModels.RepositoryError{Code: commonModels.RepositoryErrorCode_Fail}
 	}
-	log.LogInfo(ctx, "Repository - Success: ")
+	logger.LogInfo(ctx, "Repository - Success: ")
 	return &video, nil
 }

@@ -8,7 +8,7 @@ import (
 	"com.vandong9.clone_youtube_golang_api/modules/user/usecase"
 	"com.vandong9.clone_youtube_golang_api/utils"
 	"com.vandong9.clone_youtube_golang_api/utils/jwt_handler"
-	"com.vandong9.clone_youtube_golang_api/utils/log"
+	"com.vandong9.clone_youtube_golang_api/utils/logger"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -23,7 +23,7 @@ func MiddlewareCheckValidToken(db *gorm.DB) gin.HandlerFunc {
 			if err != nil {
 				errMsg = err.Error()
 			}
-			log.LogInfo(ctx, "Middle-CheckToken validate error: "+errMsg)
+			logger.LogInfo(ctx, "Middle-CheckToken validate error: "+errMsg)
 			utils.Response(ctx, http.StatusForbidden, err, nil)
 			ctx.Abort()
 			return
@@ -34,7 +34,7 @@ func MiddlewareCheckValidToken(db *gorm.DB) gin.HandlerFunc {
 		userService := usecase.CreateUserUsecase(db)
 		userID := userService.GetUserIDByGivenToken(ctx, tokenString)
 		if userID == nil {
-			log.LogInfo(ctx, "Middle-CheckToken query userid error : "+err.Error())
+			logger.LogInfo(ctx, "Middle-CheckToken query userid error : "+err.Error())
 			utils.Response(ctx, http.StatusForbidden, err, nil)
 			ctx.Abort()
 			return

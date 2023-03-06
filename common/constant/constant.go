@@ -8,4 +8,5 @@ const (
 	Header_User_ID_Key         string = "user_id"
 	Request_Header_Token_Key   string = "Token"
 	Context_ID                 string = "Context_ID"
+	Context_Logger_Object      string = "Context_Logger_Object"
 )

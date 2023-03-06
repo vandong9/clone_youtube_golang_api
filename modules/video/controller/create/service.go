@@ -4,7 +4,7 @@ import (
 	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
 	"com.vandong9.clone_youtube_golang_api/modules/channel/load_channel"
 	"com.vandong9.clone_youtube_golang_api/modules/video/models"
-	"com.vandong9.clone_youtube_golang_api/utils/log"
+	"com.vandong9.clone_youtube_golang_api/utils/logger"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -30,16 +30,16 @@ func (s *CreateVideoService) CreateVideo(ctx *gin.Context, input CreateVideoInpu
 	channel := channelService.GetChannelByID(ctx, input.ChannelID)
 
 	if channel == nil {
-		log.LogInfo(ctx, "Business - Fail: input channel is not correct: "+input.ChannelID)
+		logger.LogInfo(ctx, "Business - Fail: input channel is not correct: "+input.ChannelID)
 		return nil, &commonModels.ServiceError{Code: commonModels.ServiceErrorCode_Fail}
 	}
 
 	video, err := s.repo.CreateVideo(ctx, input)
 	if err != nil {
-		log.LogInfo(ctx, "Business - Fail"+err.Code.Error())
+		logger.LogInfo(ctx, "Business - Fail"+err.Code.Error())
 		return nil, &commonModels.ServiceError{Code: commonModels.ServiceErrorCode_Fail}
 	}
 
-	log.LogInfo(ctx, "Business - Success")
+	logger.LogInfo(ctx, "Business - Success")
 	return video, nil
 }
