@@ -18,6 +18,7 @@ type Video struct {
 	Source       string `gorm:"type:varchar(255);"`
 	Type         int
 	CommentCount int
+	ViewCount    int64
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

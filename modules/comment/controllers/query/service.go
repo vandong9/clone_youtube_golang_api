@@ -17,11 +17,11 @@ func CreateQueryCommentService(repo IQueryCommentRepository) QueryCommentService
 	return QueryCommentService{repo: repo}
 }
 
-func (s *QueryCommentService) QueryComment(input QueryCommentInput) ([]models.Comment, commonModels.ServiceErrorCode) {
+func (s *QueryCommentService) QueryComment(input QueryCommentInput) ([]models.Comment, *commonModels.ServiceError) {
 	comments, err := s.repo.QueryComment(input)
 	if err != commonModels.RepositoryErrorCode_OK {
-		return []models.Comment{}, commonModels.ServiceErrorCode_Fail
+		return []models.Comment{}, &commonModels.ServiceError{Code: commonModels.ServiceErrorCode_Fail}
 	}
 
-	return comments, commonModels.ServiceErrorCode_OK
+	return comments, nil
 }

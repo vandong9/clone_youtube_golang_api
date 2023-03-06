@@ -1,8 +1,6 @@
 package create
 
 import (
-	"net/http"
-
 	"com.vandong9.clone_youtube_golang_api/common/constant"
 	"com.vandong9.clone_youtube_golang_api/utils"
 	"com.vandong9.clone_youtube_golang_api/utils/logger"
@@ -17,7 +15,7 @@ func HandleCreateVideo(db *gorm.DB) func(ctx *gin.Context) {
 		err := ctx.ShouldBindJSON(&input)
 		if err != nil {
 			logger.LogInfo(ctx, "transport - parse input error: "+err.Error())
-			utils.Response(ctx, http.StatusBadRequest, err, nil)
+			utils.ReponseBadRequest(ctx, err)
 			return
 		}
 
@@ -25,14 +23,14 @@ func HandleCreateVideo(db *gorm.DB) func(ctx *gin.Context) {
 		err = validator.Struct(&input)
 		if err != nil {
 			logger.LogInfo(ctx, "transport - validate input error: "+err.Error())
-			utils.Response(ctx, http.StatusBadRequest, err, nil)
+			utils.ReponseBadRequest(ctx, err)
 			return
 		}
 
 		userID := ctx.GetString(constant.Header_User_ID_Key)
 		if len(userID) < 10 {
-			logger.LogInfo(ctx, "transport - missing userid error: "+err.Error())
-			utils.Response(ctx, http.StatusBadRequest, err, nil)
+			logger.LogInfo(ctx, "transport - missing userid error: ")
+			utils.ResponseForbidden(ctx, nil)
 			return
 		}
 

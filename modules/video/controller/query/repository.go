@@ -32,7 +32,7 @@ func (repo *QueryRepository) QueryVideo(input QueryInput) ([]models.Video, *comm
 	}
 
 	conditionString := strings.Join(conditionPair, " AND ")
-	err := repo.db.Where(conditionString).Offset(int(pageIndex * input.PageSize)).Limit(int(input.PageSize)).Model(&models.Video{}).Find(&videos).Error
+	err := repo.db.Debug().Where(conditionString).Offset(int(pageIndex * input.PageSize)).Limit(int(input.PageSize)).Model(&models.Video{}).Find(&videos).Error
 
 	if err != nil {
 		return videos, &commonModels.RepositoryError{Code: commonModels.RepositoryErrorCode_Fail}

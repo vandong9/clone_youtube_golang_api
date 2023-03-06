@@ -5,6 +5,6 @@ import (
 )
 
 type QueryInput struct {
-	commonModels.Paging
-	ChannelID string `json:"channel_id"`
+	commonModels.PagingQuery
+	ChannelID string `form:"channel_id"`
 }
