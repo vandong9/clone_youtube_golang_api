@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"com.vandong9.clone_youtube_golang_api/common/constant"
-	commonModels "com.vandong9.clone_youtube_golang_api/common/models"
 	"com.vandong9.clone_youtube_golang_api/utils/logger"
 
 	"com.vandong9.clone_youtube_golang_api/utils"
@@ -29,6 +28,12 @@ func HandleCreateComment(db *gorm.DB) func(ctx *gin.Context) {
 			return
 		}
 
+		if len(input.CommentID) == 0 && len(input.VideoID) == 0 {
+			logger.LogInfo(ctx, "transport - validate error: ")
+			utils.ReponseBadRequest(ctx, "validate error missing field")
+			return
+		}
+
 		userID := ctx.GetString(constant.Header_User_ID_Key)
 		if len(userID) < 10 {
 			logger.LogInfo(ctx, "transport - missing userid error: ")
@@ -42,8 +47,8 @@ func HandleCreateComment(db *gorm.DB) func(ctx *gin.Context) {
 		service := InitCreateCommentService(&repo)
 
 		comment, err := service.CreateComment(input)
-		if err != commonModels.ServiceErrorCode_OK {
-			logger.LogInfo(ctx, "transport - business return error: "+err.String())
+		if err != nil {
+			logger.LogInfo(ctx, "transport - business return error: "+err.Error())
 			utils.ReponseBadRequest(ctx, err)
 			return
 		}

@@ -3,7 +3,6 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"com.vandong9.clone_youtube_golang_api/common/constant"
 	"github.com/gin-gonic/gin"
@@ -71,7 +70,6 @@ func (logger *ContextLogger) PrintLog() {
 		return
 	}
 
-	fmt.Fprintf(os.Stdout, "Red: \033[0;31m %s None: \033[0m %s", "red string", "colorless string")
 	fmt.Println("Log stack : " + logger.ContextID + " - " + logger.Ctx.Request.RequestURI)
 	for _, value := range logger.LogStack {
 		fmt.Println(value)

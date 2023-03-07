@@ -17,6 +17,14 @@ func CreateQueryRepository(db *gorm.DB) QueryRepository {
 	return QueryRepository{db: db}
 }
 
+func (repo *QueryRepository) GetVideoByID(ID string) *models.Video {
+	var video models.Video
+	err := repo.db.Debug().Where("ID = ?", ID).Find(&video).Error
+	if err != nil {
+		return nil
+	}
+	return &video
+}
 func (repo *QueryRepository) QueryVideo(input QueryInput) ([]models.Video, *commonModels.RepositoryError) {
 	var videos []models.Video
 	pageIndex := input.PageIndex - 1

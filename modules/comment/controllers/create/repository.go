@@ -14,6 +14,18 @@ func InitCreateCommentRepository(db *gorm.DB) CreateCommentRepository {
 	return CreateCommentRepository{db: db}
 }
 
+func (repo CreateCommentRepository) GetDB() *gorm.DB {
+	return repo.db
+}
+
+func (repo CreateCommentRepository) GetCommentByID(ID string) *models.Comment {
+	var comment models.Comment
+	err := repo.db.Debug().Where("ID = ?", ID).First(&comment).Error
+	if err != nil {
+		return nil
+	}
+	return &comment
+}
 func (repo CreateCommentRepository) CreateComment(input CreateCommentInput) (*models.Comment, commonModels.RepositoryErrorCode) {
 	var comment models.Comment
 	comment.UserId = input.UserId
