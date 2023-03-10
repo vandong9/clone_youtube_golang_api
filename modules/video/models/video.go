@@ -27,6 +27,8 @@ func (m *Video) BeforeSave(_ *gorm.DB) (err error) {
 	if m.ID == "" {
 		m.ID = uuid.New().String()
 		m.CreatedAt = time.Now()
+	} else {
+		m.UpdatedAt = time.Now()
 	}
 	return nil
 }
