@@ -21,7 +21,7 @@ func Response(ctx *gin.Context, status int, err interface{}, data interface{}) {
 }
 
 func ReponseBadRequest(ctx *gin.Context, err interface{}) {
-	Response(ctx, http.StatusBadRequest, nil, nil)
+	Response(ctx, http.StatusBadRequest, nil, err)
 }
 
 func ResponseForbidden(ctx *gin.Context, err interface{}) {

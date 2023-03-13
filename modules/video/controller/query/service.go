@@ -7,7 +7,7 @@ import (
 
 type IQueryRepository interface {
 	GetVideoByID(ID string) *models.Video
-	QueryVideo(input QueryInput) ([]models.Video, *commonModels.RepositoryError)
+	QueryVideo(input QueryInput) ([]VideoItemList, *commonModels.RepositoryError)
 }
 
 type QueryVideoService struct {
@@ -22,11 +22,11 @@ func (s *QueryVideoService) GetVideoByID(ID string) *models.Video {
 	return s.repo.GetVideoByID(ID)
 }
 
-func (s *QueryVideoService) QueryVideo(input QueryInput) ([]models.Video, commonModels.ServiceErrorCode) {
+func (s *QueryVideoService) QueryVideo(input QueryInput) ([]VideoItemList, commonModels.ServiceErrorCode) {
 	videos, err := s.repo.QueryVideo(input)
 
 	if err != nil {
-		return []models.Video{}, commonModels.ServiceErrorCode_Fail
+		return []VideoItemList{}, commonModels.ServiceErrorCode_Fail
 	}
 
 	return videos, commonModels.ServiceErrorCode_OK
